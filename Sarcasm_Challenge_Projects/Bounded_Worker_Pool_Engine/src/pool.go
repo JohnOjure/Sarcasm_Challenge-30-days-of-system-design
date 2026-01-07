@@ -37,7 +37,7 @@ func (p *WorkerPool) Start() {
 		p.spawnWorker(i + 1)
 	}
 
-	//start dynamic scaler
+	//start dynamic scaler (monitor routie)
 	go p.monitor()
 }
 
@@ -46,3 +46,38 @@ func (p *WorkerPool) Submit (t Task) {
 	p.tasks <- t
 }
 
+//method to stop pool gracefully
+func (p *WorkerPool) Stop() {
+	fmt.Println("Shutting down pool...")
+
+	close(p.quitMonitor) 
+	close(p.tasks) //even though it's closed, the tasks left in it will still be processed
+	p.wg.Wait() //wait for all workers to finish
+	close(p.results)
+
+	fmt.Println("Pool stopped, arriverderci")
+}
+
+
+func (p *WorkerPool) monitor() {
+	ticker := time.NewTicker(500 * time.Millisecond)
+	defer ticker.Stop()
+
+	for {
+
+		select {
+			case <-p.quitMonitor:
+				return
+
+			case <-ticker.C:
+				queueLen := len(p.tasks)
+				currentWorkers := atomic.LoadInt32(&p.active)
+
+				// SCALE UP logic
+				if queueLen > p.config.QueueSize/2 && int(currentWorkers) < p.config.MaxWorkers {
+					fmt.Printf("[Scaler] Queue loaded (%d/%d). Spawning worker.\n", queueLen, p.config.QueueSize)
+					p.spawnWorker(int(currentWorkers) + 1)
+				}
+		}
+	}
+}
