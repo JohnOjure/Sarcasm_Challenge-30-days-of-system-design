@@ -73,9 +73,9 @@ func (p *WorkerPool) monitor() {
 				queueLen := len(p.tasks)
 				currentWorkers := atomic.LoadInt32(&p.active)
 
-				// SCALE UP logic
+				//scale up logic
 				if queueLen > p.config.QueueSize/2 && int(currentWorkers) < p.config.MaxWorkers {
-					fmt.Printf("[Scaler] Queue loaded (%d/%d). Spawning worker.\n", queueLen, p.config.QueueSize)
+					fmt.Printf("Queue loaded (%d/%d). Spawning worker.\n", queueLen, p.config.QueueSize)
 					p.spawnWorker(int(currentWorkers) + 1)
 				}
 		}
