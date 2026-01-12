@@ -75,7 +75,7 @@ func (p *WorkerPool) monitor() {
 
 				//scale up logic
 				if queueLen > p.config.QueueSize/2 && int(currentWorkers) < p.config.MaxWorkers {
-					fmt.Printf("Queue loaded (%d/%d). Spawning worker.\n", queueLen, p.config.QueueSize)
+					fmt.Printf("Queue's heavy (%d/%d). Spawning worker...\n", queueLen, p.config.QueueSize)
 					p.spawnWorker(int(currentWorkers) + 1)
 				}
 		}

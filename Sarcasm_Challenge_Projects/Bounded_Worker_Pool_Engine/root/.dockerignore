@@ -1,0 +1,9 @@
+.git
+.gitignore
+
+worker-pool
+*.exe
+*.test
+
+Dockerfile
+.dockerignore

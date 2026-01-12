@@ -2,17 +2,11 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
 	"time"
 )
 
 
 func main() {
-	// source := rand.NewSource(time.Now().UnixNano())
-	// r := rand.New(source)
-
-	rand.Seed(time.Now().UnixNano)
-
 	config := PoolConfig{
 			MinWorkers:  2,
 			MaxWorkers:  5,
@@ -32,7 +26,7 @@ func main() {
 
 	//simulate processes submitting tsaks to the pool
 	fmt.Println("About to submit a huge amount of tasks")
-	for i := 1; 1 <= 20; i++ {
+	for i := 1; i <= 20; i++ {
 		pool.Submit(Task{ID: i, Payload: "Some type stuff", CreatedAt: time.Now()})
 		time.Sleep(50 * time.Millisecond)
 	} 

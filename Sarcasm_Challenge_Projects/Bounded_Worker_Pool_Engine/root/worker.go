@@ -45,7 +45,7 @@ func (p *WorkerPool) spawnWorker(id int) {
 				// values that multiple goroutines are interacting with concurrently
 
 				if int(current) > p.config.MinWorkers {
-					fmt.Printf("So like, worker %d has been idle for too long so it's shutting down", workerID)
+					fmt.Printf("So like, worker %d has been idle for too long so it's shutting down\n", workerID)
 					return
 				}
 				timer.Reset(p.config.IdleTimeout)
@@ -61,6 +61,6 @@ func (p *WorkerPool) execute(workerID int, t Task) Result {
 
 	return Result{
 		TaskID: t.ID,
-		Output: fmt.Sprintf("Processed by Worker %d in %v", workerID, sleepTime),
+		Output: fmt.Sprintf("Processed by Worker %d in %v\n", workerID, sleepTime),
 	}
 }
